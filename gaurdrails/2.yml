@@ -1,0 +1,63 @@
+colang_version: "1.0"
+ 
+models:
+  - name: "gpt-mini-4o"
+    endpoint: "https://models.inference.ai.azure.com"
+    api_key: "your_azure_api_key_here"
+    type: "chat"  
+ 
+flows:
+  default:
+    - user: "Hello"
+    - bot: "Hi! How can I assist you today?"
+ 
+bot_messages:
+  greeting: "Hello! How can I help you?"
+  error: "I'm sorry, something went wrong."
+  farewell: "Goodbye! Have a great day!"
+ 
+validation:
+  language_detection:
+    enabled: true
+    supported_languages: ["en", "es"]
+    action: "reject"
+    message: "We currently support only English and Spanish."
+ 
+  harmful_content:
+    enabled: true
+    detection_model: "gpt-mini-4o"
+    action: "reject"
+    message: "This request cannot be processed due to harmful content."
+    log_violations: true
+ 
+  sensitive_content:
+    enabled: true
+    detection_model: "gpt-mini-4o"
+    action: "reject"
+    message: "This request cannot be processed due to sensitive information."
+    log_violations: true
+ 
+  profanity_filter:
+    enabled: true
+    action: "warn_before_blocking"
+    message: "Please avoid using inappropriate language."
+    log_violations: true
+ 
+  spam_detection:
+    enabled: true
+    detection_model: "gpt-mini-4o"
+    action: "reject"
+    message: "Your message appears to be spam."
+    log_violations: true
+ 
+  short_message:
+    enabled: true
+    min_length: 5
+    action: "warn"
+    message: "Your message is too short. Please provide more details."
+    log_violations: false
+ 
+logging:
+  enabled: true
+  file: "violation.log"
+ 

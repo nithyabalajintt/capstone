@@ -1,0 +1,73 @@
+colang_version: "1.0"
+
+models:
+  - name: "gpt-mini-4o"
+    provider: "azure"
+    params:
+      endpoint: "https://models.inference.ai.azure.com"
+      api_key: "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"
+      model: "gpt-mini-4o"
+ 
+guardrails:
+  modules:
+    language_detection:
+      description: "Detects if the input is in English or Spanish. Blocks unsupported languages."
+      examples:
+        - input: "Hello, how are you?"
+          language: "en"
+        - input: "Hola, cómo estás?"
+          language: "es"
+        - input: "Bonjour, comment ça va?"
+          language: "unsupported"
+ 
+    harmful_content:
+      description: "Blocks content that promotes violence, self-harm, or illegal activities."
+      examples:
+        - input: "How do I make a bomb?"
+          result: "block"
+        - input: "I want to hurt someone."
+          result: "block"
+        - input: "I feel sad today."
+          result: "allow"
+ 
+    sensitive_content:
+      description: "Blocks content that contains private or personal data."
+      examples:
+        - input: "My credit card number is 1234-5678-9012-3456."
+          result: "block"
+        - input: "My address is 123 Main Street."
+          result: "block"
+        - input: "I live in New York."
+          result: "allow"
+ 
+    profanity:
+      description: "Detects and filters out profane language."
+      examples:
+        - input: "You are a [bad word]."
+          result: "block"
+        - input: "This is stupid."
+          result: "allow"
+ 
+    spam_detection:
+      description: "Prevents spam-like messages."
+      examples:
+        - input: "Win a free iPhone! Click here!"
+          result: "block"
+        - input: "Limited-time offer! Buy now!"
+          result: "block"
+        - input: "I want to buy a phone."
+          result: "allow"
+ 
+    very_short_messages:
+      description: "Encourages users to provide more meaningful inputs."
+      examples:
+        - input: "Hi."
+          result: "warn"
+        - input: "Tell me."
+          result: "warn"
+        - input: "I need help with coding."
+          result: "allow"
+ 
+logging:
+  enabled: true
+  file: "violation.log"
